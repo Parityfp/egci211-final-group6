@@ -1,7 +1,6 @@
 #ifndef monster_h
 #define monster_h
 #include <iomanip>
-#include "thanos.h"
 
 
 class monster{
@@ -15,8 +14,10 @@ public:
 	monster(string="default",int=0,int=0,int=0,int=0);
 	monster(int=1,int=0,int=0,int=0,int=0, string="default");
 	~monster();
-
-	void action(monster *m, Thanos *T);
+	int getType(){
+		return type;
+	}
+	
 	void operator++(){
 		ss++;
 	}//ss is to memorised if the hero is dead or not
@@ -89,26 +90,6 @@ void monster::heal(){
 	cout<<" / "<<" potion = "<<setw(3)<<potion;
 	cout<<endl;
 }
-
-// void monster::action(monster *m, Thanos *T){
-// 	if(type==1){
-// 		int target = rand()%5;
-// 		T->damaged(atk);
-// 	}
-// 	else if(type==2){
-// 		int target = rand()%5;
-// 		m[target]->damaged(atk);
-// 	}
-// 	else if(type==3){
-// 		int target = rand()%5;
-// 		m[target]->damaged(atk);
-// 	}
-// 	else if(type==4){
-// 		for(int i=0;i<5;i++){
-// 			m[i]->damaged(atk);
-// 		}
-// 	}
-// }
 
 #endif
 

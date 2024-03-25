@@ -27,8 +27,20 @@ public:
 	int get_atk(){
 		return atk;
 	}
+	void set_atk(int a){
+		atk=a;
+	}
 	int get_hp(){
 		return hp;
+	}
+	void set_hp(int h){
+		hp=h;
+	}
+	float get_scaling(){
+		return scaling;
+	}	
+	void set_scaling(int s){
+		scaling=s;
 	}
 };
 
@@ -102,7 +114,7 @@ void Thanos::snap_finger(monster *m[], int n) {
 		cout << "INEVITABLE! ██████ ██ ███" << endl << endl;
 		this_thread::sleep_for(chrono::milliseconds(1500));
 		for (int i = 0; i < 1000; i++) {
-			cout << "████████████████████████████████████████████████████████████████";
+			cout << "██████████████████████████████████████████████████████████████████████████████████████████";
 			this_thread::sleep_for(chrono::milliseconds(1));
 		}
 		

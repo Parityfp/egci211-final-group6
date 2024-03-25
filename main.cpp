@@ -4,13 +4,16 @@ using namespace std;
 
 #include "thanos.h"
 #include "monster.h"
+#include "stack.h"
 #define DELAY 1
+const float e = 2.71828182845904523536;
 
 void target(int,int);
 
 int main(int argc, char* argv[]) {
   Thanos T;
-    int i,n,j=1;
+  Stack s;
+    int i,n,j=1,HpDebuff=0;
     random_device rd;
 
     uniform_int_distribution<> distrib(1, 4);
@@ -47,15 +50,9 @@ int main(int argc, char* argv[]) {
       int rand = distrib(rd);
       switch (rand){
         case 1:
-          m[i+5] = new monster(1, 5, 0, 1, 20, "Support Agent " + to_string(j) + " (shielder)");
+          m[i+5] = new monster(1, 5, 0, 1, 20, "Support Agent " + to_string(j) + " (debuffer)");
           break;
-        case 2:
-          m[i+5] = new monster(2, 5, 0, 1, 15, "Support Agent " + to_string(j) + " (healer)");
-          break;
-        case 3:
-          m[i+5] = new monster(3, 5, 0, 1, 15, "Support Agent " + to_string(j) + " (debuffer)");
-          break;
-        case 4:
+        default:
           m[i+5] = new monster("Support Agent " + to_string(j), 15, 5, 0, 1);
           break;
       }
@@ -64,10 +61,11 @@ int main(int argc, char* argv[]) {
 
   //----------main game----------
   cout<<endl<<"Thanos Available Actions (type corresponding numbers):"<<endl;
-  cout<<"1 punch: deal atk damage to a targeted hero"<<endl;
-  cout<<"2 steal auto: auto steal HP of the top 5 highest hp heroes"<<endl;
-  cout<<"3 steal target: target steal HP of a targeted hero"<<endl;
+  cout<<"1 Punch: deal atk damage to a targeted hero"<<endl;
+  cout<<"2 Steal auto: auto steal HP of the top 5 highest hp heroes"<<endl;
+  cout<<"3 Steal target: target steal HP of a targeted hero"<<endl;
   cout<<"4 Snap Finger (need 6 stones): half every hero HP"<<endl;
+  cout<<"6 Cleanse all debuffs"<<endl;
   cout<<endl<<endl;
   int x,A,LO,Halive,round=1;
 
@@ -80,16 +78,40 @@ int main(int argc, char* argv[]) {
     Halive=n+5;
     cout<<endl<<"-------ROUND "<<round<<"!-------"<<endl;
     cout<<endl<<"H|------Heroes Turn!------"<<endl<<endl;
+    int original_hp = T.get_hp(), original_atk = T.get_atk();
     for(i=0;i<n+5;i++){
       if(m[i]!=nullptr){
         // inner if is probably not needed, delete later.
         if(m[i]->getHp()>0){
           if(m[i]->getHp()<=10) m[i]->heal();
-          else ;
+          else {
+            switch(m[i]->getType()){
+              case 1:
+                cout << m[i]->getName() << " debuff! | ";
+                s.push(1/pow(e, 0.05*(s.get_size()+1)));
+                cout<<s.peek()<<endl;
+                HpDebuff = (1-s.peek())*original_hp;
+                T.set_hp(s.peek()*original_hp);
+                T.set_atk(s.peek()*original_atk);
+                break;
+              default:
+                cout<<left<<setw(15)<<m[i]->getName()<<" attack! | ", T.damaged(m[i]->get_atk());
+                break;
+            }
+          }
           //cout<<left<<setw(15)<<m[i]->getName()<<" attack! | ", T.damaged(m[i]->get_atk());
         }
       }
     }
+
+    if(s.get_size() > 0){
+    cout<<endl<<endl;
+    cout << "Thanos Debuffs (atk & hp): -" << fixed << setprecision(1) << 100 * (1 - s.peek()) << "% (" << s.get_size() << " stacks)"<<endl;
+    cout << "HP: " << T.get_hp() << " (-" << HpDebuff << ")"<<endl;
+    cout << "ATK: " << T.get_atk() << " (-" << floor((1-s.peek())*T.get_atk()) << ")"<<endl;
+    cout << endl;
+    }
+
 
     if(T.get_hp()<=0) break;
     cout<<endl<<"T|------Thanos Turn!------"<<endl<<endl;
@@ -135,6 +157,13 @@ int main(int argc, char* argv[]) {
         case 4:
           T.snap_finger(m,n+5);
           i++;
+          break;
+        case 6:
+          cout<<"Thanos has been cleansed (+ "<<HpDebuff<<" HP, "<< floor((1-s.peek())*T.get_atk()) << " ATK)"<<endl;
+          T.set_hp(T.get_hp()+HpDebuff);
+          HpDebuff = 0;
+          T.set_atk(T.get_atk()+floor((1-s.peek())*T.get_atk()));
+          s.cleanse();
           break;
         default:
           cout<<"Action not recognised"<<endl, LO=1;
