@@ -1,5 +1,5 @@
 #include <iostream>
-// #include <
+#include <random>
 using namespace std;
 
 #include "thanos.h"
@@ -11,6 +11,10 @@ void target(int,int);
 int main(int argc, char* argv[]) {
   Thanos T;
     int i,n,j=1;
+    random_device rd;
+
+    uniform_int_distribution<> distrib(1, 4);
+
     cout<<"How many Sheilds Agent supports: ";
     cin>>n;
 
@@ -40,7 +44,21 @@ int main(int argc, char* argv[]) {
     m[4] = new monster("Captain Britain",40,1,5,2);
 
   for(int i = 0; i < n; i++){
-       m[i+5] = new monster("Sheild Agent " + to_string(j), 15, 5, 0, 1);
+      int rand = distrib(rd);
+      switch (rand){
+        case 1:
+          m[i+5] = new monster(1, 5, 0, 1, 20, "Support Agent " + to_string(j) + " (shielder)");
+          break;
+        case 2:
+          m[i+5] = new monster(2, 5, 0, 1, 15, "Support Agent " + to_string(j) + " (healer)");
+          break;
+        case 3:
+          m[i+5] = new monster(3, 5, 0, 1, 15, "Support Agent " + to_string(j) + " (debuffer)");
+          break;
+        case 4:
+          m[i+5] = new monster("Support Agent " + to_string(j), 15, 5, 0, 1);
+          break;
+      }
 	j++;
   }
 
@@ -67,7 +85,8 @@ int main(int argc, char* argv[]) {
         // inner if is probably not needed, delete later.
         if(m[i]->getHp()>0){
           if(m[i]->getHp()<=10) m[i]->heal();
-          else cout<<left<<setw(15)<<m[i]->getName()<<" attack! | ", T.damaged(m[i]->get_atk());
+          else ;
+          //cout<<left<<setw(15)<<m[i]->getName()<<" attack! | ", T.damaged(m[i]->get_atk());
         }
       }
     }
