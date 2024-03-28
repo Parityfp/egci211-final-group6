@@ -122,6 +122,11 @@ int main(int argc, char* argv[]) {
     cout << endl;
     }
 
+
+
+    if(T.get_hp()<=0) break;
+    cout<<endl<<"T|------Thanos Turn!------"<<endl<<endl;
+    
     if(BuffScalingD>0){
       BuffScalingD--;
       cout<<"@- Buffed Scaling Ran Out!"<<endl;
@@ -150,9 +155,6 @@ int main(int argc, char* argv[]) {
       }
 
     cout<<endl;
-
-    if(T.get_hp()<=0) break;
-    cout<<endl<<"T|------Thanos Turn!------"<<endl<<endl;
 
     for(i=0;i<2;i=i){
       cout<<"Input Action: ";
