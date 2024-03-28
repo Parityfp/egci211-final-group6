@@ -1,5 +1,6 @@
 #include <iostream>
 #include <random>
+#include <string>
 using namespace std;
 
 #include "thanos.h"
@@ -19,6 +20,9 @@ int main(int argc, char* argv[]) {
     int HpDebuff=0;
     int qaction;
     int BuffScalingD=0;
+    int cheat=0;
+    int A;
+    string CH;
     random_device rd;
 
     uniform_int_distribution<> distrib(1, 4);
@@ -29,11 +33,11 @@ int main(int argc, char* argv[]) {
     //story
     cout<<endl<<endl<<"---------------------------------------------------------------"<<endl;
     cout<<"Once upon a time..."<<endl;
-    cout<<"In Jeffery's back yard"<<endl;
-    cout<<"There is a battle brewing, of the finale between a long decade of conflicts, between the IRS officers, and the potato farmer";
+    cout<<"In Thanos's back yard"<<endl;
+    cout<<"The IRS have came to collect Thanos's taxes";
     cout<<" Thanos!"<<endl<<endl;
-    cout<<"Thanos has been evading taxes for decades, this time, the officers have had enough! They decide to end this here and now!"<<endl;
-    cout<<"And thus, the fighting commence!"<<endl;
+    cout<<"Thanos has been refusing to pay his taxes for decades, this time, the officers have had enough! They decide to end this here and now!"<<endl;
+    cout<<"And thus, they asked thanos \"Will you pay the taxes now?!\", and put up arms ready!"<<endl;
     cout<<"---------------------------------------------------------------"<<endl;
     int con;
     cout<<"-----------------Input any number to continue ";
@@ -73,9 +77,9 @@ int main(int argc, char* argv[]) {
   cout<<"5 CALL support action (queue) that take time to cast in order"<<endl;
   cout<<"6 Cleanse all debuffs (clear stack)"<<endl;
   cout<<endl<<endl;
-  int x,A,LO,Halive,round=1;
+  int x,LO,Halive,round=1;
 
-  cout<<"-----------------Input any number to start the fight ";
+  cout<<"-----------------Input any number begin ";
     cin>>con;
     cout<<endl<<endl;
 
@@ -155,11 +159,26 @@ int main(int argc, char* argv[]) {
       }
 
     cout<<endl;
-
+    
     for(i=0;i<2;i=i){
       cout<<"Input Action: ";
-      cin>>A;
+      cin>>CH;
+      if(atoi(CH.c_str())>0 && atoi(CH.c_str())<7) A=atoi(CH.c_str());
+      else if(atoi(CH.c_str())==9) A=atoi(CH.c_str());
+      else if(CH=="ok") A=132165498;
+      else A=11;
+
+      //cout<<endl<<A<<endl<<"----"<<CH<<"----"<<endl;
+
       switch(A){
+        case 132165498:
+          cheat=1;
+          i+=5;
+          break;
+        case 9:
+          cout<<"-- skipping turn"<<endl;
+          i++;
+          break;
         case 1:
           for(j=0;j<n+5 ;j++) if(m[j]!=nullptr)cout<<j<<". ", m[j]->PA();
           cout<<"Target Number: ";
@@ -195,6 +214,7 @@ int main(int argc, char* argv[]) {
           HpDebuff = 0;
           T.set_atk(T.get_atk()+floor((1-s.peek())*T.get_atk()));
           s.cleanse();
+          i++;
           break;
         case 5: //call casting action
           int CA;
@@ -219,6 +239,7 @@ int main(int argc, char* argv[]) {
           } 
         }
       }
+      if(cheat==1) break;
     }
 
 
@@ -226,15 +247,20 @@ int main(int argc, char* argv[]) {
       if(m[i]!=nullptr) wiped=0;
     }
     if(wiped==1) break;
+    if(cheat==1) break;
     round++;
   }while(Halive > 0 && T.get_hp() > 0);
 
-
+if(cheat != 1){
   cout<<endl<<"---------------------------------"<<endl<<endl;
   if (T.get_hp()<=0) cout<<"HEROES WIN!!! Thanos is deafeated! He now need to pay the taxes!"<<endl;
   else cout<<"THANOS WIN!!! Heroes are deafeated!"<<endl;
   cout<<endl<<"---------------------------------"<<endl;
-
+}else{
+  cout<<endl<<"---------------------------------"<<endl<<endl;
+  cout<<"PEACE ENDING!!! Thanos paid his taxes, IRS is happy, and he go back to farming"<<endl;
+  cout<<endl<<"---------------------------------"<<endl;
+}
   for(i=0;i<n+5;i++) delete m[i]; 
 
 }
