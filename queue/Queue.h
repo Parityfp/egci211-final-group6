@@ -83,7 +83,7 @@ Queue::Queue(){
     size=0;    
 }
 Queue::~Queue(){
-    cout<<endl<<endl<<"Q destructing"<<endl; //testing only
+    // cout<<endl<<endl<<"Q destructing"<<endl; //testing only
     int x;
     while(size>0){
       x=qminus();

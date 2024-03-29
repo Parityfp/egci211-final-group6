@@ -59,7 +59,7 @@ Stack::Stack() {
 
 Stack::~Stack(){
     NodePtr t=top;
-    std::cout<<"Clearing stack"<<std::endl;
+    // std::cout<<"Clearing stack"<<std::endl;
     while(size>0)pop();
 }
 

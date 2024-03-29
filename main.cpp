@@ -17,14 +17,14 @@ int main(int argc, char* argv[]) {
   Stack s;
   Queue q;
     int i,n,j=1;
-    int HpDebuff=0;
+    int HpDebuff=0, AtkDebuff=0;
     int qaction;
     int BuffScalingD=0;
     int cheat=0;
     int A;
     string CH;
+    //RNG 1-4
     random_device rd;
-
     uniform_int_distribution<> distrib(1, 4);
 
     cout<<"How many Sheilds Agent supports: ";
@@ -57,7 +57,7 @@ int main(int argc, char* argv[]) {
 
   for(int i = 0; i < n; i++){
       int rand = distrib(rd);
-      switch (rand){
+      switch (rand){ // 1/4 chance to get a debuffer
         case 1:
           m[i+5] = new monster(1, 5, 0, 1, 20, "Support Agent " + to_string(j) + " (debuffer)");
           break;
@@ -79,10 +79,9 @@ int main(int argc, char* argv[]) {
   cout<<endl<<endl;
   int x,LO,Halive,round=1;
 
-  cout<<"-----------------Input any number begin ";
+  cout<<"-----------------Input any number to begin ";
     cin>>con;
     cout<<endl<<endl;
-
 
   int original_hp, original_atk;
 
@@ -100,12 +99,13 @@ int main(int argc, char* argv[]) {
         if(m[i]->getHp()>0){
           if(m[i]->getHp()<=10) m[i]->heal();
           else {
-            switch(m[i]->getType()){
+            switch(m[i]->getType()){ //case 1: debuff, default: attack
               case 1:
                 cout << m[i]->getName() << " debuff! | ";
                 s.push(1/pow(e, 0.05*(s.get_size()+1)));
                 cout<<s.peek()<<endl;
-                HpDebuff = (1-s.peek())*original_hp;
+                HpDebuff = ceil((1-s.peek())*original_hp);
+                AtkDebuff = ceil((1-s.peek())*original_atk);
                 T.set_hp(s.peek()*original_hp);
                 T.set_atk(s.peek()*original_atk);
                 break;
@@ -122,11 +122,9 @@ int main(int argc, char* argv[]) {
     cout<<endl<<endl;
     cout << "Thanos Debuffs (atk & hp): -" << fixed << setprecision(1) << 100 * (1 - s.peek()) << "% (" << s.get_size() << " stacks)"<<endl;
     cout << "HP: " << T.get_hp() << " (-" << HpDebuff << ")"<<endl;
-    cout << "ATK: " << T.get_atk() << " (-" << ceil((1-s.peek())*original_atk) << ")"<<endl;
+    cout << "ATK: " << T.get_atk() << " (-" << AtkDebuff << ")"<<endl;
     cout << endl;
     }
-
-
 
     if(T.get_hp()<=0) break;
     cout<<endl<<"T|------Thanos Turn!------"<<endl<<endl;
@@ -166,9 +164,7 @@ int main(int argc, char* argv[]) {
       if(atoi(CH.c_str())>0 && atoi(CH.c_str())<7) A=atoi(CH.c_str());
       else if(atoi(CH.c_str())==9) A=atoi(CH.c_str());
       else if(CH=="ok") A=132165498;
-      else A=11;
-
-      //cout<<endl<<A<<endl<<"----"<<CH<<"----"<<endl;
+      else A=11; //placeholder, not recognised and will go default case
 
       switch(A){
         case 132165498:
@@ -209,10 +205,11 @@ int main(int argc, char* argv[]) {
           i++;
           break;
         case 6:
-          cout<<"Thanos has been cleansed (+ "<<HpDebuff<<" HP, "<< ceil((1-s.peek())*original_atk) << " ATK)"<<endl;
+          cout<<"Thanos has been cleansed (+ "<<HpDebuff<<" HP, "<< AtkDebuff <<" ATK)"<<endl;
           T.set_hp(T.get_hp()+HpDebuff);
           HpDebuff = 0;
-          T.set_atk(T.get_atk()+floor((1-s.peek())*T.get_atk()));
+          T.set_atk(T.get_atk()+AtkDebuff);
+          AtkDebuff = 0;
           s.cleanse();
           i++;
           break;
@@ -241,7 +238,6 @@ int main(int argc, char* argv[]) {
       }
       if(cheat==1) break;
     }
-
 
     for(i=0;i<n+5;i++){
       if(m[i]!=nullptr) wiped=0;
